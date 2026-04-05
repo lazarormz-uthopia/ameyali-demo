@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   // Voice ID: configure in Vercel env vars
   // Use a female Spanish voice from ElevenLabs library
   const voiceId = process.env.ELEVENLABS_VOICE_ID || '21m00Tcm4TlvDq8ikWAM';
-  const modelId = 'eleven_multilingual_v2';
+  const modelId = 'eleven_flash_v2_5';
 
   try {
     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
