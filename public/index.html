@@ -16,55 +16,41 @@
 --font:'Outfit',sans-serif;--mono:'Space Mono',monospace;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden;-webkit-font-smoothing:antialiased}
- 
 .app{display:grid;grid-template-columns:1fr 420px;height:100vh}
  
-/* ===== AVATAR PANEL ===== */
+/* AVATAR PANEL */
 .avatar-panel{position:relative;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
 .avatar-bg{position:absolute;inset:0}
 .avatar-bg::before{content:'';position:absolute;width:600px;height:600px;top:45%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,107,26,.07) 0%,transparent 65%);animation:bgP 4s ease-in-out infinite}
 .avatar-bg::after{content:'';position:absolute;width:400px;height:400px;top:40%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(0,229,255,.04) 0%,transparent 55%);animation:bgP 5s ease-in-out infinite 1s}
 @keyframes bgP{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
  
-/* Particles */
 .particles{position:absolute;inset:0;pointer-events:none;z-index:1}
 .particle{position:absolute;border-radius:50%;animation:pFloat linear infinite}
 @keyframes pFloat{0%{transform:translateY(0);opacity:0}10%{opacity:.6}90%{opacity:.6}100%{transform:translateY(-100vh);opacity:0}}
  
-/* ===== AVATAR WITH BODY PARTS ===== */
+/* AVATAR DISPLAY */
 .avatar-stage{position:relative;z-index:2;flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.avatar-media{position:relative;width:92%;max-width:520px;display:flex;align-items:center;justify-content:center}
  
-.avatar-body{position:relative;width:90%;max-width:500px;aspect-ratio:1.5/1;animation:bodyBreath 3.5s ease-in-out infinite}
-@keyframes bodyBreath{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+/* Static image (idle state) */
+.avatar-img{width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 10px 40px rgba(0,0,0,.4));animation:avatarBreath 3.5s ease-in-out infinite;transition:opacity .5s}
+@keyframes avatarBreath{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.avatar-img.hidden{opacity:0;position:absolute;pointer-events:none}
  
-/* Head layer - moves independently */
-.avatar-head{position:absolute;top:0;left:0;width:100%;height:100%;animation:headMove 6s ease-in-out infinite;transform-origin:50% 70%}
-@keyframes headMove{0%,100%{transform:rotate(0deg) translateX(0)}25%{transform:rotate(.8deg) translateX(2px)}50%{transform:rotate(-.3deg) translateX(-1px)}75%{transform:rotate(.5deg) translateX(1px)}}
+/* D-ID Video (speaking state) */
+.avatar-video{width:100%;max-width:520px;border-radius:12px;filter:drop-shadow(0 10px 50px rgba(0,229,255,.15));display:none;background:transparent}
+.avatar-video.active{display:block}
+.avatar-video.active ~ .avatar-img{opacity:0;position:absolute}
  
-/* Main image */
-.avatar-head img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 40px rgba(0,0,0,.4));transition:filter .4s}
-.avatar-head img.speaking{filter:drop-shadow(0 10px 50px rgba(0,229,255,.2)) drop-shadow(0 0 20px rgba(0,229,255,.1))}
-.avatar-head img.thinking{filter:drop-shadow(0 10px 50px rgba(255,107,26,.25)) drop-shadow(0 0 20px rgba(255,107,26,.12))}
-.avatar-head img.listening{filter:drop-shadow(0 10px 50px rgba(255,68,68,.2)) drop-shadow(0 0 20px rgba(255,68,68,.1))}
+/* Loading spinner over avatar */
+.avatar-loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;flex-direction:column;align-items:center;gap:10px;z-index:5}
+.avatar-loader.show{display:flex}
+.avatar-loader .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.avatar-loader span{font-size:11px;color:var(--dim);font-family:var(--mono);letter-spacing:2px}
  
-/* Eye blink overlays - positioned on the eyes */
-.blink-l,.blink-r{position:absolute;background:rgb(195,130,65);height:0;transition:height .07s;z-index:3;border-radius:0 0 50% 50%;pointer-events:none}
-.blink-l{top:32.5%;left:37.5%;width:5.5%;transform:rotate(-2deg)}
-.blink-r{top:32%;left:50%;width:5.5%;transform:rotate(2deg)}
- 
-/* Mouth overlay for lip sync */
-.mouth-ov{position:absolute;top:44%;left:44%;width:8%;height:0;background:rgba(60,20,15,.5);border-radius:50%;z-index:3;pointer-events:none;transition:height .07s,width .07s,top .07s}
- 
-/* Cyan glow on braids - pulses */
-.braid-glow{position:absolute;top:20%;left:30%;width:40%;height:25%;background:radial-gradient(ellipse,rgba(0,229,255,.08) 0%,transparent 70%);z-index:2;pointer-events:none;animation:braidPulse 3s ease-in-out infinite}
-@keyframes braidPulse{0%,100%{opacity:.4}50%{opacity:1}}
-.avatar-head img.speaking ~ .braid-glow{animation:braidPulse 1.5s ease-in-out infinite}
- 
-/* Necklace glow */
-.neck-glow{position:absolute;top:52%;left:46%;width:8%;height:4%;background:radial-gradient(circle,rgba(0,229,255,.3) 0%,transparent 70%);z-index:2;pointer-events:none;animation:neckPulse 2.5s ease-in-out infinite}
-@keyframes neckPulse{0%,100%{opacity:.3}50%{opacity:.8}}
- 
-/* ===== CONTROLS ===== */
+/* CONTROLS */
 .avatar-controls{position:relative;z-index:4;padding:16px 24px 24px;background:linear-gradient(to top,rgba(7,7,12,.95) 70%,transparent);display:flex;flex-direction:column;align-items:center;gap:10px}
 .avatar-label{font-size:11px;letter-spacing:6px;text-transform:uppercase;color:var(--primary);font-family:var(--mono);font-weight:700}
 .avatar-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
@@ -73,11 +59,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .s-dot.thinking{background:var(--primary);animation:sPulse 1.5s infinite}
 .s-dot.speaking{background:var(--accent);animation:sPulse .8s infinite}
 @keyframes sPulse{0%,100%{box-shadow:0 0 0 0 currentColor}50%{box-shadow:0 0 0 6px transparent}}
- 
-.waveform{display:flex;gap:2px;height:24px;align-items:center}
-.wb{width:3px;border-radius:2px;background:var(--dimmer);height:3px;transition:height .06s,background .2s}
-.waveform.active .wb{background:var(--primary)}
-.waveform.speaking .wb{background:var(--accent)}
 .controls-row{display:flex;align-items:center;gap:10px}
 .mic-btn{width:56px;height:56px;border-radius:50%;border:2px solid var(--primary);background:var(--primaryDim);color:var(--primary);font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
 .mic-btn:active{transform:scale(.9)}
@@ -85,13 +66,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 @keyframes micP{0%,100%{box-shadow:0 0 0 0 rgba(255,68,68,.3)}50%{box-shadow:0 0 0 12px transparent}}
 .mic-btn:disabled{opacity:.25;pointer-events:none}
 .ctrl-btn{padding:7px 14px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--dim);font-size:11px;font-family:var(--font);cursor:pointer;transition:all .2s;font-weight:500}
-.ctrl-btn:active{transform:scale(.95)}
- 
-/* Mic status text */
 .mic-status{font-size:11px;color:var(--dim);font-family:var(--mono);min-height:16px}
 .mic-status.active{color:#ff4444}
  
-/* ===== CHAT PANEL ===== */
+/* CHAT */
 .chat-panel{display:flex;flex-direction:column;background:var(--bg2);border-left:1px solid var(--border)}
 .chat-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .chat-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
@@ -99,11 +77,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .lang-btns{display:flex;gap:3px}
 .lang-btn{padding:3px 9px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--dimmer);font-size:10px;font-family:var(--mono);cursor:pointer;transition:all .15s;font-weight:700}
 .lang-btn.active{border-color:var(--primary);color:var(--primary);background:var(--primaryDim)}
- 
 .chat-messages{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;overscroll-behavior:contain}
 .chat-messages::-webkit-scrollbar{width:3px}
 .chat-messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
- 
 .msg{display:flex;gap:8px;animation:msgIn .3s cubic-bezier(.16,1,.3,1)}
 @keyframes msgIn{from{opacity:0;transform:translateY(10px)}}
 .msg-bubble{max-width:88%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.55;word-wrap:break-word}
@@ -117,14 +93,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .msg-meta{font-size:9px;color:var(--dimmer);margin-top:4px;font-family:var(--mono)}
 .msg-bubble strong{color:var(--primary)}
 .msg-bubble .nah{color:var(--accent);font-style:italic}
- 
 .typing-indicator{display:flex;gap:8px;align-items:flex-end;animation:msgIn .3s}
 .typing-dots{display:flex;gap:4px;padding:12px 16px;background:var(--primaryDim);border:1px solid rgba(255,107,26,.12);border-radius:14px;border-bottom-left-radius:4px}
 .typing-dots span{width:5px;height:5px;background:var(--primary);border-radius:50%;animation:dotB 1.2s infinite}
 .typing-dots span:nth-child(2){animation-delay:.15s}
 .typing-dots span:nth-child(3){animation-delay:.3s}
 @keyframes dotB{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-5px);opacity:1}}
- 
 .chat-input-area{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-shrink:0}
 .chat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .2s;resize:none;min-height:40px;max-height:80px;line-height:1.4}
 .chat-input:focus{border-color:var(--primary)}
@@ -132,7 +106,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .send-btn{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primaryG));border:none;color:#fff;font-size:15px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .send-btn:active{transform:scale(.88)}
 .send-btn:disabled{opacity:.2;pointer-events:none}
- 
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:8px 18px;background:rgba(255,68,68,.9);color:#fff;border-radius:8px;font-size:12px;z-index:999;animation:toastIn .3s}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}}
  
@@ -153,21 +126,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
     <div class="avatar-bg"></div>
     <div class="particles" id="particles"></div>
     <div class="avatar-stage">
-      <div class="avatar-body">
-        <div class="avatar-head" id="avatarHead">
-          <img id="avatarImg" src="ameyali.png" alt="Ameyali">
-          <div class="blink-l" id="blinkL"></div>
-          <div class="blink-r" id="blinkR"></div>
-          <div class="mouth-ov" id="mouthOv"></div>
-          <div class="braid-glow"></div>
-          <div class="neck-glow"></div>
+      <div class="avatar-media">
+        <video class="avatar-video" id="avatarVideo" playsinline autoplay></video>
+        <img class="avatar-img" id="avatarImg" src="ameyali.png" alt="Ameyali">
+        <div class="avatar-loader" id="avatarLoader">
+          <div class="spinner"></div>
+          <span>Generando video...</span>
         </div>
       </div>
     </div>
     <div class="avatar-controls">
       <div class="avatar-label">A M E Y A L I</div>
       <div class="avatar-status"><div class="s-dot" id="sDot"></div><span id="sText">Lista para conversar</span></div>
-      <div class="waveform" id="wave"><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div></div>
       <div class="controls-row">
         <button class="ctrl-btn" id="langBtn" onclick="toggleLang()">ES 🇲🇽</button>
         <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
@@ -194,25 +164,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 </div>
  
 <script>
-// STATE
-let lang='es',isRecording=false,isSpeaking=false,isProcessing=false,recognition=null,currentAudio=null,history=[];
-let lipTimer=null,blinkTimer=null,waveTimer=null;
+// ===== STATE =====
+let lang='es',isRecording=false,isSpeaking=false,isProcessing=false,recognition=null,history=[];
  
-// DOM
 const $=id=>document.getElementById(id);
-const avatarImg=$('avatarImg'),mouthOv=$('mouthOv'),blinkL=$('blinkL'),blinkR=$('blinkR');
-const sDot=$('sDot'),sText=$('sText'),wave=$('wave'),micBtn=$('micBtn'),stopBtn=$('stopBtn');
+const avatarImg=$('avatarImg'),avatarVideo=$('avatarVideo'),avatarLoader=$('avatarLoader');
+const sDot=$('sDot'),sText=$('sText'),micBtn=$('micBtn'),stopBtn=$('stopBtn');
 const chatBox=$('chatBox'),chatInput=$('chatInput'),sendBtn=$('sendBtn'),micStatus=$('micStatus');
  
 const STATUS={
-  es:{ready:'Lista para conversar',listening:'Escuchando... habla ahora',thinking:'Pensando...',speaking:'Hablando...',error:'Error — intenta de nuevo'},
-  en:{ready:'Ready to chat',listening:'Listening... speak now',thinking:'Thinking...',speaking:'Speaking...',error:'Error — try again'}
+  es:{ready:'Lista para conversar',listening:'Escuchando... habla ahora',thinking:'Pensando...',generating:'Generando respuesta...',speaking:'Hablando...',error:'Error — intenta de nuevo'},
+  en:{ready:'Ready to chat',listening:'Listening... speak now',thinking:'Thinking...',generating:'Generating response...',speaking:'Speaking...',error:'Error — try again'}
 };
  
 // ===== INIT =====
 window.addEventListener('load',()=>{
   createParticles();
-  startBlinking();
   chatInput.addEventListener('input',()=>{
     chatInput.style.height='auto';
     chatInput.style.height=Math.min(chatInput.scrollHeight,80)+'px';
@@ -220,6 +187,14 @@ window.addEventListener('load',()=>{
   });
   setTimeout(()=>addAi('¡Tajka\' nēnek! 🌟 Soy **Ameyali**, tu guía virtual en el Museo Laberinto de las Ciencias y las Artes. ¿En qué te puedo ayudar hoy?'),500);
   initSTT();
+ 
+  // When video ends, go back to static image
+  avatarVideo.addEventListener('ended',()=>{
+    avatarVideo.classList.remove('active');
+    avatarImg.classList.remove('hidden');
+    isSpeaking=false;
+    setStatus('ready');
+  });
 });
  
 // ===== PARTICLES =====
@@ -233,85 +208,41 @@ function createParticles(){
   }
 }
  
-// ===== BLINKING =====
-function startBlinking(){scheduleBlink()}
-function scheduleBlink(){blinkTimer=setTimeout(()=>{doBlink();scheduleBlink()},2500+Math.random()*4000)}
-function doBlink(){blinkL.style.height='4.5%';blinkR.style.height='4.5%';setTimeout(()=>{blinkL.style.height='0';blinkR.style.height='0'},90)}
- 
-// ===== LIP SYNC =====
-function startLipSync(){
-  stopLipSync();
-  lipTimer=setInterval(()=>{
-    const r=Math.random();
-    if(r<.3){mouthOv.style.height='2%';mouthOv.style.width='6%';mouthOv.style.top='44.5%'}
-    else if(r<.6){mouthOv.style.height='3.5%';mouthOv.style.width='7%';mouthOv.style.top='44%'}
-    else if(r<.85){mouthOv.style.height='4.5%';mouthOv.style.width='8%';mouthOv.style.top='43.5%'}
-    else{mouthOv.style.height='1%';mouthOv.style.width='5%';mouthOv.style.top='44.5%'}
-  },90);
-}
-function stopLipSync(){if(lipTimer){clearInterval(lipTimer);lipTimer=null}mouthOv.style.height='0'}
- 
-// ===== WAVEFORM =====
-function startWave(){
-  const bars=wave.querySelectorAll('.wb');
-  stopWave();
-  waveTimer=setInterval(()=>{bars.forEach(b=>{b.style.height=(3+Math.random()*18)+'px'})},100);
-}
-function stopWave(){if(waveTimer){clearInterval(waveTimer);waveTimer=null}wave.querySelectorAll('.wb').forEach(b=>{b.style.height='3px'})}
- 
 // ===== STATUS =====
 function setStatus(key){
   sText.textContent=STATUS[lang][key]||key;
-  sDot.className='s-dot'+(key==='listening'?' listening':key==='thinking'?' thinking':key==='speaking'?' speaking':'');
-  wave.className='waveform'+(key==='listening'?' active':key==='speaking'?' speaking':'');
-  avatarImg.className=key==='speaking'?'speaking':key==='thinking'?'thinking':key==='listening'?'listening':'';
+  sDot.className='s-dot'+(key==='listening'?' listening':key==='thinking'||key==='generating'?' thinking':key==='speaking'?' speaking':'');
   stopBtn.style.display=key==='speaking'?'block':'none';
-  if(key==='listening'||key==='speaking')startWave();else stopWave();
 }
  
 // ===== SPEECH RECOGNITION =====
 function initSTT(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){console.warn('No STT');return}
+  if(!SR)return;
   recognition=new SR();
   recognition.continuous=false;
   recognition.interimResults=true;
   recognition.maxAlternatives=1;
  
   recognition.onstart=()=>{
-    console.log('STT started');
     micStatus.textContent=lang==='es'?'🔴 Habla ahora...':'🔴 Speak now...';
     micStatus.className='mic-status active';
   };
- 
   recognition.onresult=e=>{
     let final='',interim='';
     for(let i=e.resultIndex;i<e.results.length;i++){
       const t=e.results[i][0].transcript;
-      if(e.results[i].isFinal) final+=t;
-      else interim+=t;
+      if(e.results[i].isFinal)final+=t;else interim+=t;
     }
-    if(interim) micStatus.textContent='🎙️ '+interim;
-    if(final){
-      console.log('STT final:',final);
-      doStopRecording();
-      addUser(final,'🎤');
-      processMessage(final);
-    }
+    if(interim)micStatus.textContent='🎙️ '+interim;
+    if(final){doStopRecording();addUser(final,'🎤');processMessage(final)}
   };
- 
   recognition.onerror=e=>{
-    console.error('STT error:',e.error);
     doStopRecording();
-    if(e.error==='not-allowed') showToast(lang==='es'?'Permite el acceso al micrófono en tu navegador':'Allow microphone access in your browser');
-    else if(e.error!=='aborted'&&e.error!=='no-speech') showToast('Mic error: '+e.error);
-    if(e.error==='no-speech') micStatus.textContent=lang==='es'?'No escuché nada, intenta de nuevo':'Didn\'t hear anything, try again';
+    if(e.error==='not-allowed')showToast(lang==='es'?'Permite el acceso al micrófono':'Allow microphone access');
+    else if(e.error==='no-speech')micStatus.textContent=lang==='es'?'No escuché nada, intenta de nuevo':'Didn\'t hear anything';
   };
- 
-  recognition.onend=()=>{
-    console.log('STT ended');
-    if(isRecording) doStopRecording();
-  };
+  recognition.onend=()=>{if(isRecording)doStopRecording()};
 }
  
 function toggleMic(){
@@ -319,28 +250,14 @@ function toggleMic(){
   if(isProcessing)return;
   if(isRecording)doStopRecording();else doStartRecording();
 }
- 
 function doStartRecording(){
-  if(!recognition){showToast(lang==='es'?'Micrófono no disponible':'Microphone not available');return}
-  try{
-    recognition.lang=lang==='es'?'es-MX':'en-US';
-    recognition.start();
-    isRecording=true;
-    micBtn.classList.add('recording');
-    micBtn.textContent='⏸';
-    setStatus('listening');
-  }catch(e){
-    console.error('Mic start error:',e);
-    if(e.message?.includes('already started')){recognition.stop();setTimeout(()=>doStartRecording(),300)}
-  }
+  if(!recognition){showToast('Micrófono no disponible');return}
+  try{recognition.lang=lang==='es'?'es-MX':'en-US';recognition.start();isRecording=true;micBtn.classList.add('recording');micBtn.textContent='⏸';setStatus('listening')}
+  catch(e){if(e.message?.includes('already started')){recognition.stop();setTimeout(doStartRecording,300)}}
 }
- 
 function doStopRecording(){
-  isRecording=false;
-  micBtn.classList.remove('recording');
-  micBtn.textContent='🎤';
-  micStatus.textContent='';
-  micStatus.className='mic-status';
+  isRecording=false;micBtn.classList.remove('recording');micBtn.textContent='🎤';
+  micStatus.textContent='';micStatus.className='mic-status';
   try{recognition?.stop()}catch(e){}
   if(!isProcessing&&!isSpeaking)setStatus('ready');
 }
@@ -353,7 +270,7 @@ function sendMessage(){
   addUser(t);processMessage(t);
 }
  
-// ===== PROCESS =====
+// ===== PROCESS: Claude + D-ID =====
 async function processMessage(text){
   if(isProcessing)return;
   isProcessing=true;
@@ -362,66 +279,100 @@ async function processMessage(text){
   history.push({role:'user',content:text});
  
   try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history,lang})});
-    if(!r.ok)throw new Error('API '+r.status);
-    const d=await r.json();
-    const ai=d.text||'...';
-    history.push({role:'assistant',content:ai});
+    // Step 1: Get AI response from Claude
+    const chatRes=await fetch('/api/chat',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:history,lang})
+    });
+    if(!chatRes.ok)throw new Error('Chat API '+chatRes.status);
+    const chatData=await chatRes.json();
+    const aiText=chatData.text||'...';
+    history.push({role:'assistant',content:aiText});
     removeTyping();
-    addAi(ai);
-    await speak(ai);
+    addAi(aiText);
+ 
+    // Step 2: Generate D-ID talking video
+    setStatus('generating');
+    avatarLoader.classList.add('show');
+    const cleanText=aiText.replace(/\*\*/g,'').replace(/[🌟🔬🎨🚀🫶🙏✨💡🌊🏛️🌿🔭🎶🦎🧠♟️⭕🏆😊🤓]/g,'').trim();
+ 
+    const didRes=await fetch('/api/did',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text:cleanText,lang})
+    });
+    if(!didRes.ok)throw new Error('D-ID create '+didRes.status);
+    const didData=await didRes.json();
+    const talkId=didData.id;
+ 
+    // Step 3: Poll for video completion
+    const videoUrl=await pollForVideo(talkId);
+    avatarLoader.classList.remove('show');
+ 
+    if(videoUrl){
+      // Step 4: Play the video
+      setStatus('speaking');
+      isSpeaking=true;
+      avatarImg.classList.add('hidden');
+      avatarVideo.src=videoUrl;
+      avatarVideo.classList.add('active');
+      avatarVideo.play().catch(e=>{
+        console.error('Video play error:',e);
+        avatarVideo.classList.remove('active');
+        avatarImg.classList.remove('hidden');
+        isSpeaking=false;
+        setStatus('ready');
+      });
+    } else {
+      // Fallback: use browser TTS
+      fallbackTTS(cleanText);
+    }
+ 
   }catch(e){
-    console.error('Chat error:',e);
+    console.error('Process error:',e);
     removeTyping();
+    avatarLoader.classList.remove('show');
     addAi(lang==='es'?'Disculpa, tuve un problema. ¿Podrías intentar de nuevo? 🙏':'Sorry, had an issue. Try again? 🙏');
-    setStatus('error');setTimeout(()=>setStatus('ready'),2000);
+    setStatus('error');
+    setTimeout(()=>setStatus('ready'),2000);
   }
   isProcessing=false;
 }
  
-// ===== TTS =====
-async function speak(text){
-  const clean=text.replace(/\*\*/g,'').replace(/[🌟🔬🎨🚀🫶🙏✨💡🌊🏛️🌿🔭🎶🦎🧠♟️⭕🏆]/g,'').trim();
-  if(!clean)return;
- 
-  try{
-    setStatus('speaking');
-    startLipSync();
-    const r=await fetch('/api/speak',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:clean,lang})});
-    if(!r.ok)throw new Error('TTS '+r.status);
-    const blob=await r.blob();
-    const url=URL.createObjectURL(blob);
-    await new Promise(resolve=>{
-      currentAudio=new Audio(url);
-      isSpeaking=true;
-      currentAudio.onended=()=>{finish();resolve()};
-      currentAudio.onerror=()=>{finish();resolve()};
-      currentAudio.play().catch(()=>{fallbackTTS(clean);resolve()});
-    });
-  }catch(e){
-    console.error('TTS err:',e);
-    fallbackTTS(clean);
+// Poll D-ID for video result
+async function pollForVideo(talkId){
+  const maxAttempts=30;
+  for(let i=0;i<maxAttempts;i++){
+    await new Promise(r=>setTimeout(r,1000)); // Wait 1 second between polls
+    try{
+      const res=await fetch(`/api/did?id=${talkId}`);
+      const data=await res.json();
+      if(data.status==='done'&&data.result_url)return data.result_url;
+      if(data.status==='error'||data.status==='rejected'){console.error('D-ID video failed:',data);return null}
+    }catch(e){console.error('Poll error:',e)}
   }
- 
-  function finish(){stopLipSync();setStatus('ready');isSpeaking=false;currentAudio=null}
+  console.error('D-ID timeout after',maxAttempts,'attempts');
+  return null;
 }
  
+// Browser TTS fallback
 function fallbackTTS(text){
-  if(!('speechSynthesis'in window)){stopLipSync();setStatus('ready');return}
+  if(!('speechSynthesis'in window)){setStatus('ready');return}
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='es'?'es-MX':'en-US';u.rate=.95;u.pitch=1.1;
   const v=speechSynthesis.getVoices().find(v=>v.lang.startsWith(lang==='es'?'es':'en'));
   if(v)u.voice=v;
-  setStatus('speaking');startLipSync();isSpeaking=true;
-  u.onend=u.onerror=()=>{stopLipSync();setStatus('ready');isSpeaking=false};
+  setStatus('speaking');isSpeaking=true;
+  u.onend=u.onerror=()=>{setStatus('ready');isSpeaking=false};
   speechSynthesis.speak(u);
 }
  
 function stopAll(){
-  if(currentAudio){currentAudio.pause();currentAudio=null}
+  avatarVideo.pause();
+  avatarVideo.classList.remove('active');
+  avatarImg.classList.remove('hidden');
   speechSynthesis?.cancel();
-  stopLipSync();setStatus('ready');isSpeaking=false;
+  setStatus('ready');isSpeaking=false;
 }
  
 // ===== CHAT UI =====
@@ -444,9 +395,7 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 // ===== LANG =====
 function setLang(l){lang=l;$('lEs').classList.toggle('active',l==='es');$('lEn').classList.toggle('active',l==='en');$('langBtn').textContent=l==='es'?'ES 🇲🇽':'EN 🇺🇸';chatInput.placeholder=l==='es'?'Escribe tu pregunta...':'Type your question...';if(!isProcessing&&!isSpeaking)setStatus('ready')}
 function toggleLang(){setLang(lang==='es'?'en':'es')}
- 
 function showToast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3500)}
- 
 if('speechSynthesis'in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}
 </script>
 </body>
